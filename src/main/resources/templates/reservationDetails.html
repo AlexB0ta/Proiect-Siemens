@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation Details</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-5 mb-4">Reservation Details</h1>
+    <div class="card">
+        <div class="card-body">
+            <p><strong>Reservation for:</strong> <span th:text="${reservation.name}"></span></p>
+            <p><strong>Start Date:</strong> <span th:text="${reservation.startDate}"></span></p>
+            <p><strong>Number of Nights:</strong> <span th:text="${reservation.numNights}"></span></p>
+            <p><strong>Payment Method:</strong> <span th:text="${reservation.payMethod} == 'ONLINE' ? 'Online' : 'At Location'"></span></p>
+            <p><strong>Room ID:</strong> <span th:text="${reservation.roomId}"></span></p>
+            <p><strong>Room type:</strong> <span th:text="${roomType}"></span></p>
+            <p><strong>Total price:</strong> <span th:text="${totalPrice}"></span></p>
+
+            <div class="mt-5" th:if="${canLeaveReview}">
+                <h4>Leave a Review</h4>
+                <form action="#" th:action="@{/leaveReview}" th:object="${review}" method="post">
+                    <div class="form-group">
+                        <label for="reservationId">Reservation ID:</label>
+                        <input type="number" class="form-control" id="reservationId" th:field="*{reservationId}" th:value="${reservation.id}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="rating">Rating:</label>
+                        <select class="form-control" id="rating" th:field="*{rating}">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="comment">Comment:</label>
+                        <textarea class="form-control" id="comment" th:field="*{comment}" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">Submit Review</button>
+                </form>
+            </div>
+
+            <div class="d-flex align-items-center mt-3" th:if="${canCancel}">
+                <p class="mb-0 mr-2"><span th:text="${'You have' + timeLeft +' hours left to cancel!'}"></span></p>
+                <form th:action="@{/cancelReservation}" method="post">
+                    <input type="hidden" name="reservationId" th:value="${reservation.id}">
+                    <button type="submit" class="btn btn-danger ml-5">Cancel Reservation</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <a href="/reservations" class="btn btn-primary mt-3">Back to Reservations</a>
+</div>
+</body>
+</html>

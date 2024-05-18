@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Search</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #eae7e7;
+            padding-top: 50px;
+        }
+
+        .container {
+            background-color: #d3e596;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+
+        .btn-primary {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="mb-4">Search Hotels</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="radiusInput">Search Radius (in kilometers):</label>
+                <input type="number" class="form-control" id="radiusInput" placeholder="Enter search radius">
+            </div>
+        </div>
+    </div>
+    <button class="btn btn-warning" onclick="getLocationAndSearch()">Search</button>
+    <button class="btn btn-primary" onclick="viewReservations()">View Reservations</button>
+</div>
+    <script>
+        function getLocationAndSearch() {
+            let radius=document.getElementById("radiusInput").value;
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
+            } else {
+                console.log("Geolocation is not supported by this browser.");
+            }
+
+            function successFunction(position) {
+                let latitude = position.coords.latitude;
+                let longitude = position.coords.longitude;
+
+                fetch('/searchHotels', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        latitude: latitude,
+                        longitude: longitude,
+                        raza: radius
+                    })
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.href = '/displayHotels';
+                            //console.log(JSON.stringify({ latitude: latitude, longitude: longitude, radius: radius }));
+                        }
+                        else
+                            throw new Error('Network response was not ok.');
+                    })
+                    .then(data => {
+                        console.log(data);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+
+            function errorFunction() {
+                console.log("Unable to retrieve your location.");
+            }
+
+        }
+        function viewReservations() {
+            window.location.href = '/reservations';
+        }
+    </script>
+</div>
+
+
+</body>
+</html>

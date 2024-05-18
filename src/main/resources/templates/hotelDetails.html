@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Details</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-5 mb-4">Hotel Details</h1>
+    <div class="card">
+        <div class="card-header">
+            <h3 th:text="${hotel.name}"></h3>
+            <h5 class="float-right" th:text="${'Rating: ' + hotelRating + ' / 5'}"></h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Rooms:</strong></p>
+            <ul class="list-group mb-5">
+                <li th:each="room : ${rooms}" class="list-group-item">
+                    Room Number: <span th:text="${room.roomNumber}"></span> |
+                    Type: <span th:text="${room.type}"></span> |
+                    Price: <span th:text="${room.price}"></span> |
+                    Available: <span th:text="${room.available} ? 'Yes' : 'No'"></span>
+                    <button th:if="${room.available}" class="btn btn-primary float-right" th:text="'Book'" th:onclick="'window.location.href=\'/reserveRoom/' + ${room.roomNumber} + '\';'"></button>
+                </li>
+            </ul>
+
+            <p><strong>Reviews:</strong></p>
+            <ul class="list-group">
+                <li th:each="review : ${reviews}" class="list-group-item">
+                    <p><strong>Rating:</strong> <span th:text="${review.rating}"></span></p>
+                    <p><strong>Comment:</strong> <span th:text="${review.comment}"></span></p>
+                    <hr>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <a href="/displayHotels" class="btn btn-primary mt-3">Back to Hotels</a>
+</div>
+
+</body>
+</html>
